@@ -30,14 +30,15 @@ from modules.msg_func import IdentityMessage
 from modules.msg_agg import LastAggregator
 from modules.neighbor_loader import LastNeighborLoader
 from modules.memory_module import DyRepMemory
-from modules.early_stopping import  EarlyStopMonitor
+from modules.early_stopping import EarlyStopMonitor
 from tgb.linkproppred.dataset_pyg import PyGLinkPropPredDataset
-
-
 
 # ==========
 # ========== Define helper function...
 # ==========
+
+from tqdm import tqdm
+
 
 def train():
     r"""
@@ -58,7 +59,7 @@ def train():
     neighbor_loader.reset_state()  # Start with an empty graph.
 
     total_loss = 0
-    for batch in train_loader:
+    for batch in tqdm(train_loader):
         batch = batch.to(device)
         optimizer.zero_grad()
 
@@ -126,7 +127,7 @@ def test(loader, neg_sampler, split_mode):
 
     perf_list = []
 
-    for pos_batch in loader:
+    for pos_batch in tqdm(loader):
         pos_src, pos_dst, pos_t, pos_msg = (
             pos_batch.src,
             pos_batch.dst,
@@ -161,7 +162,7 @@ def test(loader, neg_sampler, split_mode):
                 "eval_metric": [metric],
             }
             perf_list.append(evaluator.eval(input_dict)[metric])
-        
+
         # update the memory with positive edges
         n_id = torch.cat([pos_src, pos_dst]).unique()
         n_id, edge_index, e_id = neighbor_loader(n_id)
@@ -183,6 +184,7 @@ def test(loader, neg_sampler, split_mode):
 
     return perf_metric
 
+
 # ==========
 # ==========
 # ==========
@@ -197,7 +199,7 @@ print("INFO: Arguments:", args)
 DATA = "tgbl-wiki"
 LR = args.lr
 BATCH_SIZE = args.bs
-K_VALUE = args.k_value  
+K_VALUE = args.k_value
 NUM_EPOCH = args.num_epoch
 SEED = args.seed
 MEM_DIM = args.mem_dim
@@ -278,7 +280,6 @@ criterion = torch.nn.BCEWithLogitsLoss()
 # Helper vector to map global node indices to local ones.
 assoc = torch.empty(data.num_nodes, dtype=torch.long, device=device)
 
-
 print("==========================================================")
 print(f"=================*** {MODEL_NAME}: LinkPropPred: {DATA} ***=============")
 print("==========================================================")
@@ -306,8 +307,8 @@ for run_idx in range(NUM_RUNS):
     # define an early stopper
     save_model_dir = f'{osp.dirname(osp.abspath(__file__))}/saved_models/'
     save_model_id = f'{MODEL_NAME}_{DATA}_{SEED}_{run_idx}'
-    early_stopper = EarlyStopMonitor(save_model_dir=save_model_dir, save_model_id=save_model_id, 
-                                    tolerance=TOLERANCE, patience=PATIENCE)
+    early_stopper = EarlyStopMonitor(save_model_dir=save_model_dir, save_model_id=save_model_id,
+                                     tolerance=TOLERANCE, patience=PATIENCE)
 
     # ==================================================== Train & Validation
     # loading the validation negative samples
@@ -361,8 +362,8 @@ for run_idx in range(NUM_RUNS):
                   f'test {metric}': perf_metric_test,
                   'test_time': test_time,
                   'tot_train_val_time': train_val_time
-                  }, 
-    results_filename)
+                  },
+                 results_filename)
 
     print(f"INFO: >>>>> Run: {run_idx}, elapsed time: {timeit.default_timer() - start_run: .4f} <<<<<")
     print('-------------------------------------------------------------------------------')

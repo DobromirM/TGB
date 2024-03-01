@@ -9,10 +9,10 @@ from clint.textui import progress
 
 from tgb.linkproppred.negative_sampler import NegativeEdgeSampler
 from tgb.utils.info import (
-    PROJ_DIR, 
-    DATA_URL_DICT, 
-    DATA_VERSION_DICT, 
-    DATA_EVAL_METRIC_DICT, 
+    PROJ_DIR,
+    DATA_URL_DICT,
+    DATA_VERSION_DICT,
+    DATA_EVAL_METRIC_DICT,
     BColors
 )
 from tgb.utils.pre_process import (
@@ -27,11 +27,11 @@ from tgb.utils.utils import save_pkl, load_pkl
 
 class LinkPropPredDataset(object):
     def __init__(
-        self,
-        name: str,
-        root: Optional[str] = "datasets",
-        meta_dict: Optional[dict] = None,
-        preprocess: Optional[bool] = True,
+            self,
+            name: str,
+            root: Optional[str] = "datasets",
+            meta_dict: Optional[dict] = None,
+            preprocess: Optional[bool] = True,
     ):
         r"""Dataset class for link prediction dataset. Stores meta information about each dataset such as evaluation metrics etc.
         also automatically pre-processes the dataset.
@@ -49,7 +49,6 @@ class LinkPropPredDataset(object):
             self.url = None
             print(f"Dataset {self.name} url not found, download not supported yet.")
 
-        
         # check if the evaluatioin metric are specified
         if self.name in DATA_EVAL_METRIC_DICT:
             self.metric = DATA_EVAL_METRIC_DICT[self.name]
@@ -58,7 +57,6 @@ class LinkPropPredDataset(object):
             print(
                 f"Dataset {self.name} default evaluation metric not found, it is not supported yet."
             )
-
 
         root = PROJ_DIR + root
 
@@ -75,11 +73,11 @@ class LinkPropPredDataset(object):
 
         if name == "tgbl-flight":
             self.meta_dict["nodefile"] = self.root + "/" + "airport_node_feat.csv"
-        
+
         self.meta_dict["val_ns"] = self.root + "/" + self.name + "_val_ns.pkl"
         self.meta_dict["test_ns"] = self.root + "/" + self.name + "_test_ns.pkl"
 
-        #! version check
+        # ! version check
         self.version_passed = True
         self._version_check()
 
@@ -117,22 +115,21 @@ class LinkPropPredDataset(object):
             print(f"Dataset {self.name} version number not found.")
             self.version_passed = False
             return None
-        
+
         if (version > 1):
-            #* check if current version is outdated
+            # * check if current version is outdated
             self.meta_dict["fname"] = self.root + "/" + self.name + "_edgelist_v" + str(int(version)) + ".csv"
             self.meta_dict["nodefile"] = None
             if self.name == "tgbl-flight":
                 self.meta_dict["nodefile"] = self.root + "/" + "airport_node_feat_v" + str(int(version)) + ".csv"
             self.meta_dict["val_ns"] = self.root + "/" + self.name + "_val_ns_v" + str(int(version)) + ".pkl"
             self.meta_dict["test_ns"] = self.root + "/" + self.name + "_test_ns_v" + str(int(version)) + ".pkl"
-            
+
             if (not osp.exists(self.meta_dict["fname"])):
                 print(f"Dataset {self.name} version {int(version)} not found.")
                 print(f"Please download the latest version of the dataset.")
                 self.version_passed = False
                 return None
-        
 
     def download(self):
         """
@@ -168,8 +165,8 @@ class LinkPropPredDataset(object):
                 with open(path_download, "wb") as f:
                     total_length = int(r.headers.get("content-length"))
                     for chunk in progress.bar(
-                        r.iter_content(chunk_size=1024),
-                        expected_size=(total_length / 1024) + 1,
+                            r.iter_content(chunk_size=1024),
+                            expected_size=(total_length / 1024) + 1,
                     ):
                         if chunk:
                             f.write(chunk)
@@ -267,10 +264,10 @@ class LinkPropPredDataset(object):
         self._test_mask = _test_mask
 
     def generate_splits(
-        self,
-        full_data: Dict[str, Any],
-        val_ratio: float = 0.15,
-        test_ratio: float = 0.15,
+            self,
+            full_data: Dict[str, Any],
+            val_ratio: float = 0.15,
+            test_ratio: float = 0.15,
     ) -> Tuple[Dict[str, Any], Dict[str, Any], Dict[str, Any]]:
         r"""Generates train, validation, and test splits from the full dataset
         Args:
@@ -282,6 +279,16 @@ class LinkPropPredDataset(object):
             val_data: dictionary containing the validation dataset
             test_data: dictionary containing the test dataset
         """
+        #
+        # # If this is equal to 1 we are using the full dataset
+        # reduced_ratio = 0.001
+        #
+        # reduced_time = np.quantile(full_data["timestamps"], reduced_ratio)
+        # timestamps = full_data["timestamps"]
+        #
+        # for key, value in full_data.items():
+        #     full_data[key] = value[timestamps <= reduced_time]
+
         val_time, test_time = list(
             np.quantile(
                 full_data["timestamps"],
@@ -295,7 +302,7 @@ class LinkPropPredDataset(object):
         test_mask = timestamps > test_time
 
         return train_mask, val_mask, test_mask
-    
+
     @property
     def eval_metric(self) -> str:
         """
@@ -397,7 +404,7 @@ class LinkPropPredDataset(object):
 
 
 def main():
-    name = "tgbl-comment" 
+    name = "tgbl-comment"
     dataset = LinkPropPredDataset(name=name, root="datasets", preprocess=True)
 
     dataset.node_feat
