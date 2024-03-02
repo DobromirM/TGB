@@ -42,7 +42,7 @@ scikit-learn==1.2.2
 scipy==1.10.1
 six==1.16.0
 sympy==1.11.1
--e git+ssh://git@github.com/shenyangHuang/TGB.git@8d116181b619e74d482d1ea3dd289fd4c669c78a#egg=tgb
+py-tgb
 threadpoolctl==3.1.0
 torch==2.0.0
 torch-cluster==1.6.1+pt20cu117
