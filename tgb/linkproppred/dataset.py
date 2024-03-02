@@ -141,9 +141,7 @@ class LinkPropPredDataset(object):
             print("raw file found, skipping download")
             return
 
-        inp = input(
-            "Will you download the dataset(s) now? (y/N)\n"
-        ).lower()  # ask if the user wants to download the dataset
+        inp = "y"  # ask if the user wants to download the dataset
 
         if inp == "y":
             print(
@@ -279,15 +277,15 @@ class LinkPropPredDataset(object):
             val_data: dictionary containing the validation dataset
             test_data: dictionary containing the test dataset
         """
-        #
-        # # If this is equal to 1 we are using the full dataset
-        # reduced_ratio = 0.001
-        #
-        # reduced_time = np.quantile(full_data["timestamps"], reduced_ratio)
-        # timestamps = full_data["timestamps"]
-        #
-        # for key, value in full_data.items():
-        #     full_data[key] = value[timestamps <= reduced_time]
+
+        # If this is equal to 1 we are using the full dataset
+        reduced_ratio = 0.001
+
+        reduced_time = np.quantile(full_data["timestamps"], reduced_ratio)
+        timestamps = full_data["timestamps"]
+
+        for key, value in full_data.items():
+            full_data[key] = value[timestamps <= reduced_time]
 
         val_time, test_time = list(
             np.quantile(
