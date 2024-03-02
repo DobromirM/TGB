@@ -279,13 +279,13 @@ class LinkPropPredDataset(object):
         """
 
         # If this is equal to 1 we are using the full dataset
-        reduced_ratio = 0.001
-
-        reduced_time = np.quantile(full_data["timestamps"], reduced_ratio)
-        timestamps = full_data["timestamps"]
-
-        for key, value in full_data.items():
-            full_data[key] = value[timestamps <= reduced_time]
+        # reduced_ratio = 0.001
+        #
+        # reduced_time = np.quantile(full_data["timestamps"], reduced_ratio)
+        # timestamps = full_data["timestamps"]
+        #
+        # for key, value in full_data.items():
+        #     full_data[key] = value[timestamps <= reduced_time]
 
         val_time, test_time = list(
             np.quantile(
