@@ -54,8 +54,10 @@ def train():
 
     if torch.cuda.is_available():
         device = torch.device("cuda")
+        print("cuda available")
     else:
         device = torch.device("cpu")
+        print("gup running")
     model['memory'].train()
     model['gnn'].train()
     model['link_pred'].train()
