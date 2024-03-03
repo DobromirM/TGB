@@ -51,6 +51,11 @@ def train():
         None
             
     """
+
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
     model['memory'].train()
     model['gnn'].train()
     model['link_pred'].train()
