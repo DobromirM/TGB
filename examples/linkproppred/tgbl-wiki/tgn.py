@@ -35,6 +35,7 @@ from modules.neighbor_loader import LastNeighborLoader
 from modules.memory_module import TGNMemory
 from modules.early_stopping import  EarlyStopMonitor
 from tgb.linkproppred.dataset_pyg import PyGLinkPropPredDataset
+import attacks
 
 
 # ==========
@@ -66,7 +67,7 @@ def train():
         optimizer.zero_grad()
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
-        attack = attack.RandomAttack()
+        attack = attacks.RandomAttack()
         t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
         print("attack")
         #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
