@@ -83,14 +83,22 @@ class BaseAttack(ABC):
         Perform a perturbation attack on the validation dataset.
         """
 
-        pass
+        p_timestamps, p_src, p_dst, p_msg, p_label = self.perturb(self.val_data["timestamps"],
+                                                                  self.val_data["sources"],
+                                                                  self.val_data["destinations"],
+                                                                  self.val_data["edge_feat"],
+                                                                  self.val_data["edge_label"])
 
-    def perturb_test(self):
-        """
-        Perform a perturbation attack on the test dataset.
-        """
+        sorted_indices = p_timestamps.argsort()
 
-        pass
+        self.val_data["timestamps"] = p_timestamps[sorted_indices]
+        self.val_data["sources"] = p_src[sorted_indices]
+        self.val_data["destinations"] = p_dst[sorted_indices]
+        self.val_data["edge_feat"] = p_msg[sorted_indices]
+        self.val_data["edge_label"] = p_label[sorted_indices]
+
+        self.update_data()
+        self.update_masks()
 
     def get_masks(self):
         """
