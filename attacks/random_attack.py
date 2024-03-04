@@ -7,7 +7,7 @@ from attacks.base_attack import BaseAttack
 
 class RandomAttack(BaseAttack):
 
-    def __init__(self, rate=0.1):
+    def __init__(self, rate=0.1, device = torch.device("cuda" if torch.cuda.is_available() else "cpu")):
         super().__init__()
 
         # The rate dictates how many fake samples the attacker should create
@@ -15,7 +15,7 @@ class RandomAttack(BaseAttack):
 
     def perturb(self, t, src, dst, msg):
         self.clear_entries()
-        self.add_entries(t, src, dst)
+        self.add_entries(t, src, dst).to(self.device)
 
         unique_src = self.get_unique_src()
         unique_dst = self.get_unique_dst()

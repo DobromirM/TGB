@@ -68,7 +68,7 @@ def train():
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
         original_size = src.size()
-        attack =RandomAttack()
+        attack = RandomAttack(device=device)
         t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
         updated_size = src.size()
         #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
