@@ -67,9 +67,10 @@ def train():
         optimizer.zero_grad()
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
+        original_size = src.size()
         attack = attacks.RandomAttack()
         t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
-        print("attack")
+        updated_size = src.size()
         #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
 
         # Sample negative destination nodes.
@@ -110,7 +111,7 @@ def train():
         model['memory'].detach()
         total_loss += float(loss) * batch.num_events
 
-    return total_loss / train_data.num_events
+    return total_loss / train_data.num_events, original_size, updated_size
 
 
 @torch.no_grad()
@@ -209,6 +210,8 @@ TOLERANCE = args.tolerance
 PATIENCE = args.patience
 NUM_RUNS = args.num_run
 NUM_NEIGHBORS = 10
+ATTACK = "random"
+DEBUG = True
 
 
 MODEL_NAME = 'TGN'
@@ -291,6 +294,7 @@ results_filename = f'{results_path}/{MODEL_NAME}_{DATA}_results.json'
 for run_idx in range(NUM_RUNS):
     print('-------------------------------------------------------------------------------')
     print(f"INFO: >>>>> Run: {run_idx} <<<<<")
+    print(f"INFO: >>>>> Attack: {ATTACK} <<<<<")
     start_run = timeit.default_timer()
 
     # set the seed for deterministic results...
@@ -312,9 +316,13 @@ for run_idx in range(NUM_RUNS):
     for epoch in range(1, NUM_EPOCH + 1):
         # training
         start_epoch_train = timeit.default_timer()
-        loss = train()
+        loss, original_size, updated_size = train()
         print(
             f"Epoch: {epoch:02d}, Loss: {loss:.4f}, Training elapsed Time (s): {timeit.default_timer() - start_epoch_train: .4f}"
+        )
+        if DEBUG:
+            print(
+            f"Original size: {original_size},updated size: {updated_size} "
         )
 
         # validation
@@ -350,6 +358,7 @@ for run_idx in range(NUM_RUNS):
     save_results({'model': MODEL_NAME,
                   'data': DATA,
                   'run': run_idx,
+                  'attack': ATTACK,
                   'seed': SEED,
                   f'val {metric}': val_perf_list,
                   f'test {metric}': perf_metric_test,
