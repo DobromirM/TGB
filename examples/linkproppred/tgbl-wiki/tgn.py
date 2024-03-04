@@ -68,6 +68,7 @@ def train():
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
         attack = attack.RandomAttack()
         t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
+        print("attack")
         #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
 
         # Sample negative destination nodes.
