@@ -1,8 +1,8 @@
-import torch
+import numpy as np
 
 
-def random_tensor(min_val, max_val, n):
+def random_array(min_val, max_val, n):
     """
-    Generate a tensor containing `n` random values between `min_val` and `max_val`
+    Generate an array containing `n` random values between `min_val` and `max_val`
     """
-    return torch.randint(low=min_val, high=max_val, size=(n,), dtype=torch.int64)
+    return np.random.randint(low=min_val, high=max_val, size=(n,))

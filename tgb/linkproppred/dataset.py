@@ -23,6 +23,7 @@ from tgb.utils.pre_process import (
     load_edgelist_wiki,
 )
 from tgb.utils.utils import save_pkl, load_pkl
+from attacks.random_attack import RandomAttack
 
 
 class LinkPropPredDataset(object):
@@ -298,6 +299,11 @@ class LinkPropPredDataset(object):
         train_mask = timestamps <= val_time
         val_mask = np.logical_and(timestamps <= test_time, timestamps > val_time)
         test_mask = timestamps > test_time
+
+        # Perform the perturbation attack
+        attack = RandomAttack(full_data, train_mask, val_mask, test_mask)
+        attack.perturb_train()
+        train_mask, val_mask, test_mask = attack.get_masks()
 
         return train_mask, val_mask, test_mask
 

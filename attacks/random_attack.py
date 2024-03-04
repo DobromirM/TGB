@@ -1,20 +1,18 @@
-import torch
-
-from attacks.utils import random_tensor
+import numpy as np
 
 from attacks.base_attack import BaseAttack
+from attacks.utils import random_array
 
 
 class RandomAttack(BaseAttack):
 
-    def __init__(self, rate=0.1):
-        super().__init__()
+    def __init__(self, full_data, train_mask, val_mask, test_mask, rate=0.1):
+        super().__init__(full_data, train_mask, val_mask, test_mask)
 
         # The rate dictates how many fake samples the attacker should create
         self.rate = rate
 
-    def perturb(self, t, src, dst, msg):
-        self.clear_entries()
+    def perturb(self, t, src, dst, msg, label):
         self.add_entries(t, src, dst)
 
         unique_src = self.get_unique_src()
@@ -23,21 +21,18 @@ class RandomAttack(BaseAttack):
         # Calculate how many fake entries to generate
         fake_entries_size = int(len(src) * self.rate)
 
-        # We use the same weight for all indices
-        fake_src_weights = torch.ones(len(unique_src), )
-        fake_dst_weights = torch.ones(len(unique_dst), )
-
         # Generate fake entries
-        # `torch.multinomial` samples random indices using the provided weights
-        fake_timestamps = random_tensor(self.get_min_timestamp(), self.get_max_timestamp(), fake_entries_size)
-        fake_src = unique_src[torch.multinomial(fake_src_weights, fake_entries_size, replacement=True)]
-        fake_dst = unique_dst[torch.multinomial(fake_dst_weights, fake_entries_size, replacement=True)]
-        fake_msg = msg[:fake_entries_size]  # Currently not used and contains the same value.
+        fake_timestamps = random_array(self.get_min_timestamp(), self.get_max_timestamp(), fake_entries_size)
+        fake_src = np.random.choice(unique_src, fake_entries_size, replace=True)
+        fake_dst = np.random.choice(unique_dst, fake_entries_size, replace=True)
+        fake_msg = msg[np.random.choice(msg.shape[0], fake_entries_size, replace=True)]
+        fake_label = np.random.choice(label, fake_entries_size, replace=True)
 
         # Add the fake entries to the original
-        t = torch.cat([t, fake_timestamps])
-        src = torch.cat([src, fake_src])
-        dst = torch.cat([dst, fake_dst])
-        msg = torch.cat([msg, fake_msg])
+        t = np.concatenate([t, fake_timestamps])
+        src = np.concatenate([src, fake_src])
+        dst = np.concatenate([dst, fake_dst])
+        msg = np.concatenate([msg, fake_msg])
+        label = np.concatenate([label, fake_label])
 
-        return t, src, dst, msg
+        return t, src, dst, msg, label

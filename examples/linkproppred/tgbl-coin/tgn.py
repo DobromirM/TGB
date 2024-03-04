@@ -215,6 +215,8 @@ MODEL_NAME = 'TGN'
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # data loading
+set_random_seed(SEED)
+
 dataset = PyGLinkPropPredDataset(name=DATA, root="datasets")
 train_mask = dataset.train_mask
 val_mask = dataset.val_mask
