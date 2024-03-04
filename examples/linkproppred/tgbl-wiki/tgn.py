@@ -227,10 +227,6 @@ test_mask = dataset.test_mask
 data = dataset.get_TemporalData()
 
 data = data.to(device)
-attack = RandomAttack()
-print("original Data length", data.t.size())
-data.t, data.src, data.dst, data.msg = attack.perturb(data.t, data.src, data.dst, data.msg)
-print("new Data length", data.t.size())
 metric = dataset.eval_metric
 
 train_data = data[train_mask]
