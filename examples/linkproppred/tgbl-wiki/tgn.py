@@ -68,8 +68,8 @@ def train():
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
         original_size = src.size()
-        attack = RandomAttack(device=device)
-        t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
+        #attack = RandomAttack(device=device)
+        #t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
         updated_size = src.size()
 
         # Sample negative destination nodes.
@@ -235,9 +235,14 @@ data = data.to(device)
 metric = dataset.eval_metric
 
 train_data = data[train_mask]
-print("train data")
-print(train_data.t)
+print("oroginal train data size", train_data.t.size())
+attack = RandomAttack(device=device)
+train_data.t, train_data.src, train_data.dst, train_data.msg = attack.perturb(train_data.t, train_data.src, train_data.dst, train_data.msg)
+print("updated train data size", train_data.t.size())
 val_data = data[val_mask]
+print("oroginal val data size", val_data.t.size())
+val_data.t, val_data.src, val_data.dst, val_data.msg = attack.perturb(val_data.t, val_data.src, val_data.dst, val_data.msg)
+print("updated val data size", val_data.t.size())
 test_data = data[test_mask]
 
 train_loader = TemporalDataLoader(train_data, batch_size=BATCH_SIZE)
