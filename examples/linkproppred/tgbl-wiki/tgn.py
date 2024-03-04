@@ -66,6 +66,9 @@ def train():
         optimizer.zero_grad()
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
+        #attack = attack.RandomAttack()
+        #t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
+        #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
 
         # Sample negative destination nodes.
         neg_dst = torch.randint(
