@@ -67,11 +67,10 @@ def train():
         optimizer.zero_grad()
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
-        original_size = src.size()
-        attack = RandomAttack(device=device)
-        t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
-        updated_size = src.size()
-        #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
+        #original_size = src.size()
+        #attack = RandomAttack(device=device)
+        #t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
+        #updated_size = src.size()
 
         # Sample negative destination nodes.
         neg_dst = torch.randint(
@@ -226,7 +225,12 @@ train_mask = dataset.train_mask
 val_mask = dataset.val_mask
 test_mask = dataset.test_mask
 data = dataset.get_TemporalData()
+
 data = data.to(device)
+attack = RandomAttack()
+print("original Data length", data.t)
+data.t, data.src, data.dst, data.msg = attack.perturb(data.t, data.src, data.dst, data.msg)
+print("new Data length", data.t)
 metric = dataset.eval_metric
 
 train_data = data[train_mask]
