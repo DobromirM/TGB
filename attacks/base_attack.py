@@ -5,7 +5,22 @@ from abc import ABC, abstractmethod
 
 class BaseAttack(ABC):
 
-    def __init__(self, full_data, train_mask, val_mask, test_mask):
+    def __init__(self, attack_dataset="train"):
+        self.attack_dataset = attack_dataset
+        self.history = None
+        self.test_data = None
+        self.val_data = None
+        self.test_mask = None
+        self.val_mask = None
+        self.train_data = None
+        self.train_mask = None
+        self.full_data = None
+
+    @abstractmethod
+    def __repr__(self):
+        ...
+
+    def init_dataset(self, full_data, train_mask, val_mask, test_mask):
         self.full_data = full_data
 
         self.train_mask = train_mask
@@ -40,6 +55,18 @@ class BaseAttack(ABC):
 
         self.test_mask = np.concatenate(
             [np.full(train_len, False), np.full(val_len, False), np.full(test_len, True)])
+
+    def perform_attack(self):
+        """
+        Perform the perturbation attack.
+        """
+
+        if self.attack_dataset == "train":
+            self.perturb_train()
+        elif self.attack_dataset == "validation":
+            self.perturb_validation()
+        else:
+            raise Exception("Invalid dataset selected for attack!")
 
     @abstractmethod
     def perturb(self, timestamps, src, dst, msg, label):

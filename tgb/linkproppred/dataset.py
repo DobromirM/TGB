@@ -23,7 +23,6 @@ from tgb.utils.pre_process import (
     load_edgelist_wiki,
 )
 from tgb.utils.utils import save_pkl, load_pkl
-from attacks.random_attack import RandomAttack
 
 
 class LinkPropPredDataset(object):
@@ -33,6 +32,8 @@ class LinkPropPredDataset(object):
             root: Optional[str] = "datasets",
             meta_dict: Optional[dict] = None,
             preprocess: Optional[bool] = True,
+            reduced_ratio=None,
+            attack=None
     ):
         r"""Dataset class for link prediction dataset. Stores meta information about each dataset such as evaluation metrics etc.
         also automatically pre-processes the dataset.
@@ -42,6 +43,9 @@ class LinkPropPredDataset(object):
             meta_dict: dictionary containing meta information about the dataset, should contain key 'dir_name' which is the name of the dataset folder
             preprocess: whether to pre-process the dataset
         """
+        self.reduce_ratio = reduced_ratio
+        self.attack = attack
+
         self.name = name  ## original name
         # check if dataset url exist
         if self.name in DATA_URL_DICT:
@@ -280,13 +284,13 @@ class LinkPropPredDataset(object):
         """
 
         # If this is equal to 1 we are using the full dataset
-        # reduced_ratio = 0.001
-        #
-        # reduced_time = np.quantile(full_data["timestamps"], reduced_ratio)
-        # timestamps = full_data["timestamps"]
-        #
-        # for key, value in full_data.items():
-        #     full_data[key] = value[timestamps <= reduced_time]
+
+        if self.reduce_ratio:
+            reduced_time = np.quantile(full_data["timestamps"], self.reduce_ratio)
+            timestamps = full_data["timestamps"]
+
+            for key, value in full_data.items():
+                full_data[key] = value[timestamps <= reduced_time]
 
         val_time, test_time = list(
             np.quantile(
@@ -300,10 +304,10 @@ class LinkPropPredDataset(object):
         val_mask = np.logical_and(timestamps <= test_time, timestamps > val_time)
         test_mask = timestamps > test_time
 
-        # Perform the perturbation attack
-        attack = RandomAttack(full_data, train_mask, val_mask, test_mask)
-        attack.perturb_train()
-        train_mask, val_mask, test_mask = attack.get_masks()
+        if self.attack:
+            self.attack.init_dataset(full_data, train_mask, val_mask, test_mask)
+            self.attack.perform_attack()
+            train_mask, val_mask, test_mask = self.attack.get_masks()
 
         return train_mask, val_mask, test_mask
 

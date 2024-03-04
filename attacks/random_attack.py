@@ -6,11 +6,14 @@ from attacks.utils import random_array
 
 class RandomAttack(BaseAttack):
 
-    def __init__(self, full_data, train_mask, val_mask, test_mask, rate=0.1):
-        super().__init__(full_data, train_mask, val_mask, test_mask)
+    def __init__(self, attack_dataset="train", rate=0.1):
+        super().__init__(attack_dataset)
 
         # The rate dictates how many fake samples the attacker should create
         self.rate = rate
+
+    def __repr__(self):
+        return f"RandomAttack(attack_dataset={self.attack_dataset}, rate={self.rate})"
 
     def perturb(self, t, src, dst, msg, label):
         self.add_entries(t, src, dst)

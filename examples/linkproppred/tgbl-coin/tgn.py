@@ -24,6 +24,7 @@ from torch_geometric.loader import TemporalDataLoader
 
 from torch_geometric.nn import TransformerConv
 
+from attacks import *
 # internal imports
 from tgb.utils.utils import get_args, set_random_seed, save_results
 from tgb.linkproppred.evaluate import Evaluator
@@ -209,6 +210,14 @@ NUM_RUNS = args.num_run
 NUM_NEIGHBORS = 10
 
 MODEL_NAME = 'TGN'
+
+# ==========
+REDUCE_RATIO = args.reduce_ratio
+
+if args.attack == "None":
+    ATTACK = None
+else:
+    ATTACK = eval(args.attack)
 # ==========
 
 # set the device
@@ -217,7 +226,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # data loading
 set_random_seed(SEED)
 
-dataset = PyGLinkPropPredDataset(name=DATA, root="datasets")
+dataset = PyGLinkPropPredDataset(name=DATA, root="datasets", reduced_ratio=REDUCE_RATIO, attack=ATTACK)
 train_mask = dataset.train_mask
 val_mask = dataset.val_mask
 test_mask = dataset.test_mask
@@ -352,7 +361,9 @@ for run_idx in range(NUM_RUNS):
                   f'val {metric}': val_perf_list,
                   f'test {metric}': perf_metric_test,
                   'test_time': test_time,
-                  'tot_train_val_time': train_val_time
+                  'tot_train_val_time': train_val_time,
+                  'reduce_ratio': REDUCE_RATIO,
+                  'attack': ATTACK.__str__(),
                   },
                  results_filename)
 
