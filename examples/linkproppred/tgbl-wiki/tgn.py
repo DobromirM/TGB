@@ -235,6 +235,8 @@ data = data.to(device)
 metric = dataset.eval_metric
 
 train_data = data[train_mask]
+print("train data")
+print(train_data.t)
 val_data = data[val_mask]
 test_data = data[test_mask]
 
