@@ -35,7 +35,7 @@ from modules.neighbor_loader import LastNeighborLoader
 from modules.memory_module import TGNMemory
 from modules.early_stopping import  EarlyStopMonitor
 from tgb.linkproppred.dataset_pyg import PyGLinkPropPredDataset
-import attacks
+from attacks.random_attack import RandomAttack
 
 
 # ==========
@@ -68,7 +68,7 @@ def train():
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
         original_size = src.size()
-        attack = attacks.RandomAttack()
+        attack =RandomAttack()
         t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
         updated_size = src.size()
         #src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
