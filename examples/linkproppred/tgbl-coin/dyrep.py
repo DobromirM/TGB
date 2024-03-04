@@ -51,13 +51,6 @@ def train():
         None
             
     """
-
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-        print("cuda available")
-    else:
-        device = torch.device("cpu")
-        print("gup running")
     model['memory'].train()
     model['gnn'].train()
     model['link_pred'].train()
@@ -214,7 +207,7 @@ TIME_DIM = args.time_dim
 EMB_DIM = args.emb_dim
 TOLERANCE = args.tolerance
 PATIENCE = args.patience
-NUM_RUNS = args.num_run
+NUM_RUNS = args.num_ruSn
 NUM_NEIGHBORS = 10
 
 MODEL_NAME = 'DyRep'
@@ -223,7 +216,13 @@ USE_DST_EMB_IN_MSG = True
 # ==========
 
 # set the device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("cuda available")
+else:
+    device = torch.device("cpu")
+    print("gup running")
 
 # data loading
 dataset = PyGLinkPropPredDataset(name=DATA, root="datasets")
