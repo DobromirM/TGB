@@ -226,6 +226,11 @@ val_mask = dataset.val_mask
 test_mask = dataset.test_mask
 data = dataset.get_TemporalData()
 
+print("oroginal data size", data.t.size())
+attack = RandomAttack(device=device)
+data.t, data.src, data.pos_dst, data.msg = attack.perturb(data.t, data.src, data.pos_dst, data.msg)
+print("updated data size", data.t.size())
+
 data = data.to(device)
 metric = dataset.eval_metric
 
