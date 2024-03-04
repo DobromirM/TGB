@@ -68,8 +68,8 @@ def train():
 
         src, pos_dst, t, msg = batch.src, batch.dst, batch.t, batch.msg
         original_size = src.size()
-        #attack = RandomAttack(device=device)
-        #t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg)
+        attack = RandomAttack(device=device)
+        t, src, pos_dst, msg = attack.perturb(t, src, pos_dst, msg).to(device)
         updated_size = src.size()
 
         # Sample negative destination nodes.
@@ -226,10 +226,10 @@ val_mask = dataset.val_mask
 test_mask = dataset.test_mask
 data = dataset.get_TemporalData()
 
-print("oroginal data size", data.t.size())
-attack = RandomAttack(device=device)
-data.t, data.src, data.dst, data.msg = attack.perturb(data.t, data.src, data.dst, data.msg)
-print("updated data size", data.t.size())
+#print("oroginal data size", data.t.size())
+#attack = RandomAttack(device=device)
+#data.t, data.src, data.dst, data.msg = attack.perturb(data.t, data.src, data.dst, data.msg)
+#print("updated data size", data.t.size())
 
 data = data.to(device)
 metric = dataset.eval_metric
