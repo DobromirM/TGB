@@ -14,8 +14,8 @@ class RandomAttack(BaseAttack):
         self.rate = rate
 
     def perturb(self, t, src, dst, msg):
-        self.clear_entries()
-        self.add_entries(t, src, dst)
+        #self.clear_entries()
+        #self.add_entries(t, src, dst)
 
         unique_src = self.get_unique_src()
         unique_dst = self.get_unique_dst()
