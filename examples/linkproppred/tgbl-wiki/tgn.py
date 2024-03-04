@@ -210,7 +210,7 @@ PATIENCE = args.patience
 NUM_RUNS = args.num_run
 NUM_NEIGHBORS = 10
 ATTACK = "random"
-DEBUG = False
+DEBUG = True
 
 
 MODEL_NAME = 'TGN'
