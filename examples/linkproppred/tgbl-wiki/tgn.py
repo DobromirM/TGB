@@ -237,8 +237,8 @@ metric = dataset.eval_metric
 train_data = data[train_mask]
 print("oroginal train data size", train_data.t.size())
 print("oroginal train src", train_data.src.size())
-print("oroginal train dst", train_data.dst.size())
-print("oroginal train msg", train_data.msg.size())
+print("oroginal train dst", dataset.dst.size())
+print("oroginal train msg", dataset.msg.size())
 attack = RandomAttack(device=device)
 train_data.t, train_data.src, train_data.dst, train_data.msg = attack.perturb(train_data.t, train_data.src, train_data.dst, train_data.msg)
 print("updated train data size", train_data.t.size())
