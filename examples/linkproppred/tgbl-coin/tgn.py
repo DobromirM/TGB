@@ -214,7 +214,7 @@ MODEL_NAME = 'TGN'
 # ==========
 REDUCE_RATIO = args.reduce_ratio
 
-if args.attack == "None":
+if args.attack == "None" or args.attack is None:
     ATTACK = None
 else:
     ATTACK = eval(args.attack)

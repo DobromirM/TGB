@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.neighbors import KernelDensity
+from tqdm import tqdm
 
 from attacks import BaseAttack
 
@@ -33,7 +34,7 @@ class ConstrainedAttackOnline(BaseAttack):
         fake_msg_all = np.empty([0, 1])
         fake_label_all = np.empty([0, ])
 
-        for i in range(self.batch_size, len(t), self.batch_size):
+        for i in tqdm(range(self.batch_size, len(t), self.batch_size)):
             self.add_entries(t[i - self.batch_size: i], src[i - self.batch_size: i], dst[i - self.batch_size: i])
 
             src_count = self.get_src_count()

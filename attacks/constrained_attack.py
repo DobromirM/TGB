@@ -1,11 +1,13 @@
 import numpy as np
 from sklearn.neighbors import KernelDensity
+from tqdm import tqdm
 
 from attacks import BaseAttack
 
 
 class ConstrainedAttack(BaseAttack):
-    def __init__(self, attack_dataset="train", rate=0.1, kde_bandwidth=0.1, time_window=100, max_node_degree_strat='median'):
+    def __init__(self, attack_dataset="train", rate=0.1, kde_bandwidth=0.1, time_window=100,
+                 max_node_degree_strat='median'):
         super().__init__(attack_dataset)
         self.rate = rate
         self.kde_bandwidth = kde_bandwidth
@@ -41,8 +43,10 @@ class ConstrainedAttack(BaseAttack):
         fake_src_all = np.empty([0, ])
         fake_dst_all = np.empty([0, ])
 
+        unique_fake_timestamps = np.unique(fake_timestamps, return_counts=True)
+
         # Generate fake data for each unique timestamp based on the time and node requirements
-        for timestamp, count in zip(*np.unique(fake_timestamps, return_counts=True)):
+        for timestamp, count in tqdm(zip(*unique_fake_timestamps), total=len(unique_fake_timestamps[0])):
             time_filter = np.logical_and(t <= timestamp, t >= timestamp - self.time_window)
 
             # src
