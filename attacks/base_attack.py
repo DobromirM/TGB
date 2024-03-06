@@ -69,11 +69,11 @@ class BaseAttack(ABC):
             raise Exception("Invalid dataset selected for attack!")
 
     @abstractmethod
-    def perturb(self, timestamps, src, dst, msg, label):
+    def perturb(self, t, src, dst, msg, label):
         """
         Perform a perturbation attack.
 
-        :param timestamps: timestamps of the transactions
+        :param t: timestamps of the transactions
         :param src: source addresses of the transactions
         :param dst: destination addresses of the transactions
         :param msg: message of the transaction

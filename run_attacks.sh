@@ -4,10 +4,9 @@ set -x;
 
 declare -a attack=(
 'None'
-'RandomAttack(attack_dataset="train",rate=0.1)'
-'RandomAttack(attack_dataset="train",rate=0.2)'
-'RandomAttackOnline(attack_dataset="train",rate=0.1,batch_size=200)'
-'RandomAttackOnline(attack_dataset="train",rate=0.2,batch_size=200)'
+'RandomAttack(attack_dataset="train",rate=0.3)'
+'RandomAttackOnline(attack_dataset="train",rate=0.3,batch_size=200)'
+'ConstrainedAttack(attack_dataset="train",rate=0.3,kde_bandwidth=0.1,time_window=100,max_node_degree_strat="median")'
 )
 
 for a in "${attack[@]}"
