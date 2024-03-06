@@ -5,8 +5,8 @@ from attacks import BaseAttack
 
 
 class ConstrainedAttack(BaseAttack):
-    def __init__(self, rate=0.1, kde_bandwidth=0.1, time_window=100, max_node_degree_strat='median'):
-        super().__init__()
+    def __init__(self, attack_dataset="train", rate=0.1, kde_bandwidth=0.1, time_window=100, max_node_degree_strat='median'):
+        super().__init__(attack_dataset)
         self.rate = rate
         self.kde_bandwidth = kde_bandwidth
         self.time_window = time_window
@@ -20,7 +20,7 @@ class ConstrainedAttack(BaseAttack):
             raise Exception("Invalid max node strategy!")
 
     def __repr__(self):
-        return f"ConstrainedAttack(rate={self.rate}, kde_bandwidth={self.kde_bandwidth}, time_window={self.time_window}, max_node_degree_strat={self.max_node_degree_strat_name})"
+        return f"ConstrainedAttack(attack_dataset={self.attack_dataset}, rate={self.rate}, kde_bandwidth={self.kde_bandwidth}, time_window={self.time_window}, max_node_degree_strat={self.max_node_degree_strat_name})"
 
     def perturb(self, t, src, dst, msg, label):
         self.add_entries(t, src, dst)
