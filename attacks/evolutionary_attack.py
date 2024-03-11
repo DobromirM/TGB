@@ -33,7 +33,7 @@ class EvolutionaryAttack(BaseAttack):
         fake_dst = self.get_dst()[dst_idxs]
 
         # crossover
-        for src_i, dst_i in tqdm(zip(src_idxs, dst_idxs)):
+        for src_i, dst_i in tqdm(zip(src_idxs, dst_idxs), total=len(dst_idxs)):
             if src[src_i] == dst[dst_i]:
                 continue
 
