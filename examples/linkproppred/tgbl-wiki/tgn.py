@@ -25,6 +25,7 @@ from torch_geometric.loader import TemporalDataLoader
 from torch_geometric.nn import TransformerConv
 
 # internal imports
+from attacks import *
 from tgb.utils.utils import get_args, set_random_seed, save_results
 from tgb.linkproppred.evaluate import Evaluator
 from modules.decoder import LinkPredictor
@@ -40,6 +41,8 @@ from tgb.linkproppred.dataset_pyg import PyGLinkPropPredDataset
 # ==========
 # ========== Define helper function...
 # ==========
+
+from tqdm import tqdm
 
 def train():
     r"""
@@ -61,7 +64,7 @@ def train():
     neighbor_loader.reset_state()  # Start with an empty graph.
 
     total_loss = 0
-    for batch in train_loader:
+    for batch in tqdm(train_loader):
         batch = batch.to(device)
         optimizer.zero_grad()
 
@@ -127,7 +130,7 @@ def test(loader, neg_sampler, split_mode):
 
     perf_list = []
 
-    for pos_batch in loader:
+    for pos_batch in tqdm(loader):
         pos_src, pos_dst, pos_t, pos_msg = (
             pos_batch.src,
             pos_batch.dst,
@@ -207,6 +210,14 @@ NUM_NEIGHBORS = 10
 
 
 MODEL_NAME = 'TGN'
+
+# ==========
+REDUCE_RATIO = args.reduce_ratio
+
+if args.attack == "None" or args.attack is None:
+    ATTACK = None
+else:
+    ATTACK = eval(args.attack)
 # ==========
 
 # set the device

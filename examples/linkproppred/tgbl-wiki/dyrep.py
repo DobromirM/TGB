@@ -22,6 +22,7 @@ import torch
 from torch_geometric.loader import TemporalDataLoader
 
 # internal imports
+from attacks import *
 from tgb.utils.utils import get_args, set_random_seed, save_results
 from tgb.linkproppred.evaluate import Evaluator
 from modules.decoder import LinkPredictor
@@ -213,6 +214,14 @@ NUM_NEIGHBORS = 10
 MODEL_NAME = 'DyRep'
 USE_SRC_EMB_IN_MSG = False
 USE_DST_EMB_IN_MSG = True
+
+# ==========
+REDUCE_RATIO = args.reduce_ratio
+
+if args.attack == "None" or args.attack is None:
+    ATTACK = None
+else:
+    ATTACK = eval(args.attack)
 # ==========
 
 # set the device
