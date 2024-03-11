@@ -362,7 +362,9 @@ for run_idx in range(NUM_RUNS):
                   f'val {metric}': val_perf_list,
                   f'test {metric}': perf_metric_test,
                   'test_time': test_time,
-                  'tot_train_val_time': train_val_time
+                  'tot_train_val_time': train_val_time,
+                  'reduce_ratio': REDUCE_RATIO,
+                  'attack': ATTACK.__str__(),
                   }, 
     results_filename)
 
