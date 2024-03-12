@@ -23,12 +23,11 @@ class RandomAttackDeletion(BaseAttack):
         # Calculate how many entries to delete
         fake_entries_size = int(len(src) * self.rate)
 
-        del_idx = random.sample(range(0, len(src)), fake_entries_size)
-        t = t[t!=del_idx].reshape(-1)
-        src = src[src!=del_idx].reshape(-1)
-        dst = dst[dst!=del_idx].reshape(-1)
-        msg = msg[msg!=del_idx]
-        msg = msg.reshape(msg.shape[1], msg.shape[2])
-        label = label[label!=del_idx].reshape(-1)
+        keep_idx = random.sample(range(0, len(src)), len(src) - fake_entries_size)
+        t = t[keep_idx]
+        src = src[keep_idx]
+        dst = dst[keep_idx]
+        msg = msg[keep_idx]
+        label = label[keep_idx]
 
         return t, src, dst, msg,label
